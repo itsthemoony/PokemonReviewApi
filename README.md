@@ -11,7 +11,8 @@ Welcome to the **Pokémon Review API**, a Spring Boot-based RESTful API designed
 - **Get Pokémon by ID**: Fetch details of a Pokémon by its ID.  
 - **Update Pokémon**: Modify an existing Pokémon's details.  
 - **Delete Pokémon**: Remove a Pokémon from the database.  
-- **Pagination**: Fetch Pokémon in pages with customizable page size and number.  
+- **Pagination**: Fetch Pokémon in pages with customizable page size and number.
+- **Review Pokémon**: Create, retrieve, update, and delete reviews for any Pokémon.
 
 ---
 
@@ -126,6 +127,38 @@ Response:
 ### 5. Delete Pokémon 🗑️
 Endpoint: DELETE /api/pokemons/{id}
 Response: 200 OK
+
+
+## 2 Review Endpoints ✍️
+
+1. Create Review 🆕
+POST /api/pokemon/{pokemonId}/reviews
+Request Body:
+{
+  "title": "Awesome Pokémon",
+  "content": "Pikachu was super fast and effective in battle!",
+  "stars": 5
+}
+
+2. Get All Reviews for a Pokémon 🗂️
+GET /api/pokemon/{pokemonId}/reviews
+Returns a list of all reviews for a specific Pokémon.
+
+4. Get Review by ID 🔍
+GET /api/pokemon/{pokemonId}/reviews/{id}
+
+5. Update Review ✏️
+PUT /api/pokemon/{pokemonId}/reviews/{id}
+Request Body:
+{
+  "title": "Updated Review",
+  "content": "Still awesome, but Charmander is better!",
+  "stars": 4
+}
+
+6. Delete Review ❌
+DELETE /api/pokemon/{pokemonId}/reviews/{id}
+
 
 ## 💻 Technologies Used
 #### Spring Boot: The backend framework for building the API.
