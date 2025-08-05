@@ -2,7 +2,7 @@ package com.pokemonreview.PokemonReviewApi.services.Impl;
 import com.pokemonreview.PokemonReviewApi.dtos.PokemonDto;
 import com.pokemonreview.PokemonReviewApi.dtos.PokemonResponse;
 import com.pokemonreview.PokemonReviewApi.exceptions.PokemonNotFoundException;
-import com.pokemonreview.PokemonReviewApi.models.Pokemon;
+import com.pokemonreview.PokemonReviewApi.models.PokemonModel;
 import com.pokemonreview.PokemonReviewApi.repository.PokemonRepository;
 import com.pokemonreview.PokemonReviewApi.services.PokemonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
-import java.io.Console;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,16 +25,16 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public PokemonDto createPokemon(PokemonDto pokemonDto) {
-        Pokemon pokemon = mapToEntity(pokemonDto);
-        Pokemon savedPokemon = pokemonRepository.save(pokemon);
+        PokemonModel pokemon = mapToEntity(pokemonDto);
+        PokemonModel savedPokemon = pokemonRepository.save(pokemon);
         return mapPokemonToDto(savedPokemon);
     }
 
     @Override
     public PokemonResponse getPokemons(int pageNo, int pageSize) {
         PageRequest pageable = PageRequest.of(pageNo, pageSize);
-        Page<Pokemon> pokemons = pokemonRepository.findAll(pageable);
-        List<Pokemon> listOfPokemon = pokemons.getContent();
+        Page<PokemonModel> pokemons = pokemonRepository.findAll(pageable);
+        List<PokemonModel> listOfPokemon = pokemons.getContent();
         List<PokemonDto> content = pokemons.stream().map(this::mapPokemonToDto).collect(Collectors.toList());
         PokemonResponse pokemonResponse = new PokemonResponse();
         pokemonResponse.setContent(content);
@@ -51,7 +49,7 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public PokemonDto updatePokemon(int id, PokemonDto pokemonDto) {
-        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon not found"));
+        PokemonModel pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon not found"));
         pokemon.setName(pokemonDto.getName());
         pokemon.setType(pokemonDto.getType());
         pokemonRepository.save(pokemon);
@@ -60,18 +58,18 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public PokemonDto getPokemonById(int id) {
-        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon id " + id + " not found"));
+        PokemonModel pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon id " + id + " not found"));
         return mapPokemonToDto(pokemon);
     }
 
     @Override
     public void deletePokemonById(int id) {
-        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon id " + id + " not found"));
+        PokemonModel pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon id " + id + " not found"));
         pokemonRepository.delete(pokemon);
     }
 
 
-    private PokemonDto mapPokemonToDto(Pokemon pokemon) {
+    private PokemonDto mapPokemonToDto(PokemonModel pokemon) {
         PokemonDto pokemonDto = new PokemonDto();
         pokemonDto.setId(pokemon.getId());
         pokemonDto.setName(pokemon.getName());
@@ -80,8 +78,8 @@ public class PokemonServiceImpl implements PokemonService {
         return pokemonDto;
     }
 
-    private Pokemon mapToEntity(PokemonDto pokemonDto){
-        Pokemon pokemon = new Pokemon();
+    private PokemonModel mapToEntity(PokemonDto pokemonDto){
+        PokemonModel pokemon = new PokemonModel();
         pokemon.setName(pokemonDto.getName());
         pokemon.setType(pokemonDto.getType());
         return pokemon;

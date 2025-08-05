@@ -1,10 +1,9 @@
 package com.pokemonreview.PokemonReviewApi.services.Impl;
-import com.pokemonreview.PokemonReviewApi.dtos.PokemonDto;
 import com.pokemonreview.PokemonReviewApi.dtos.ReviewDto;
 import com.pokemonreview.PokemonReviewApi.exceptions.PokemonNotFoundException;
 import com.pokemonreview.PokemonReviewApi.exceptions.ReviewNotFoundException;
-import com.pokemonreview.PokemonReviewApi.models.Pokemon;
-import com.pokemonreview.PokemonReviewApi.models.Review;
+import com.pokemonreview.PokemonReviewApi.models.PokemonModel;
+import com.pokemonreview.PokemonReviewApi.models.ReviewModel;
 import com.pokemonreview.PokemonReviewApi.repository.PokemonRepository;
 import com.pokemonreview.PokemonReviewApi.repository.ReviewRepository;
 import com.pokemonreview.PokemonReviewApi.services.ReviewService;
@@ -27,23 +26,23 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto createReview(int pokemonId, ReviewDto reviewDto) {
-        Review review =  mapDtoToReview(reviewDto);
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
+        ReviewModel review =  mapDtoToReview(reviewDto);
+        PokemonModel pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
         review.setPokemon(pokemon);
-        Review newReview = reviewRepository.save(review);
+        ReviewModel newReview = reviewRepository.save(review);
         return mapReviewToDto(newReview);
     }
 
     @Override
     public List<ReviewDto> getReviewsByPokemonId(int id) {
-        List<Review> reviews = reviewRepository.findByPokemonId(id);
+        List<ReviewModel> reviews = reviewRepository.findByPokemonId(id);
         return reviews.stream().map(this::mapReviewToDto).collect(Collectors.toList());
     }
 
     @Override
     public ReviewDto getReviewById(int reviewId, int pokemonId) {
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new ReviewNotFoundException("Review Not Found"));
+        PokemonModel pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
+        ReviewModel review = reviewRepository.findById(reviewId).orElseThrow(()-> new ReviewNotFoundException("Review Not Found"));
         if(review.getPokemon().getId() != pokemon.getId()){
             throw new ReviewNotFoundException("Review Not Found");
         }
@@ -52,22 +51,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto updateReview(int reviewId, int pokemonId, ReviewDto reviewDto) {
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new ReviewNotFoundException("Review Not Found"));
+        PokemonModel pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
+        ReviewModel review = reviewRepository.findById(reviewId).orElseThrow(()-> new ReviewNotFoundException("Review Not Found"));
         if(review.getPokemon().getId() != pokemon.getId()){
             throw new ReviewNotFoundException("Review Not Found");
         }
         review.setTitle(reviewDto.getTitle());
         review.setContent(reviewDto.getContent());
         review.setStars(reviewDto.getStars());
-        Review updatedReview = reviewRepository.save(review);
+        ReviewModel updatedReview = reviewRepository.save(review);
         return mapReviewToDto(updatedReview);
     }
 
     @Override
     public void deleteReview(int reviewId, int pokemonId) {
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new ReviewNotFoundException("Review Not Found"));
+        PokemonModel pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon Not Found"));
+        ReviewModel review = reviewRepository.findById(reviewId).orElseThrow(()-> new ReviewNotFoundException("Review Not Found"));
         if(review.getPokemon().getId() != pokemon.getId()){
             throw new ReviewNotFoundException("Review Not Found");
         }
@@ -75,7 +74,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
 
-    private ReviewDto mapReviewToDto(Review review) {
+    private ReviewDto mapReviewToDto(ReviewModel review) {
         ReviewDto reviewDto = new ReviewDto();
         reviewDto.setId(review.getId());
         reviewDto.setTitle(review.getTitle());
@@ -84,8 +83,8 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewDto;
     }
 
-    private Review mapDtoToReview(ReviewDto reviewDto){
-        Review review = new Review();
+    private ReviewModel mapDtoToReview(ReviewDto reviewDto){
+        ReviewModel review = new ReviewModel();
         review.setId(reviewDto.getId());
         review.setTitle(reviewDto.getTitle());
         review.setContent(reviewDto.getContent());
