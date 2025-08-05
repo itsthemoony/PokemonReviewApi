@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "reviews")
 public class ReviewModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

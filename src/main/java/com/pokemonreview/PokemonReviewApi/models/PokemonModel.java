@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "pokemons")
 public class PokemonModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
